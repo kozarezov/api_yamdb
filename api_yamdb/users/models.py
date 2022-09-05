@@ -21,3 +21,19 @@ class User(AbstractUser):
     last_name = models.CharField('Фамилия', max_length=150, blank=True)
     bio = models.TextField('Информация о себе', blank=True)
     role = models.CharField('Роль', max_length=15, choices=ROLES, default=USER)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('username',)
+
+    def __str__(self):
+        return self.username
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['username', 'email'],
+                name='unique_username_email'
+            )
+        ]
