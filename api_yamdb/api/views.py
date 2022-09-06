@@ -1,13 +1,14 @@
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import status, viewsets, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import AccessToken
 
 from api import serializers
+from api import permissions
 from users.models import User
 
 
@@ -55,3 +56,14 @@ class UserToken(APIView):
             {'Ошибка формирования токена'},
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """Вьюсет для добавления/изменения/удаления пользователей."""
+
+    queryset = User.objects.all()
+    serializer_class = serializers.UsersSerializer
+    permission_classes = (permissions.IsAdmin,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('username',)
+    lookup_field = 'username'

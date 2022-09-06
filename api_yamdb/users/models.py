@@ -37,3 +37,9 @@ class User(AbstractUser):
                 name='unique_username_email'
             )
         ]
+
+    def is_admin(self):
+        return self.is_staff or self.role == self.ADMIN
+
+    def is_moderator(self):
+        return self.role == self.MODERATOR
