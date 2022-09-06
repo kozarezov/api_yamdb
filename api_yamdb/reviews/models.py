@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Category(models.Model):
+    """Категория произведения."""
     name = models.CharField(verbose_name='Имя', max_length=100)
     slug = models.SlugField(verbose_name='Слаг', max_length=20, unique=True)
 
@@ -15,6 +16,7 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
+    """Жанр произведения."""
     name = models.CharField(verbose_name='Имя', max_length=100)
     slug = models.SlugField(verbose_name='Слаг', max_length=20, unique=True)
 
@@ -28,6 +30,7 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
+    """Произведение (книга, фильм, муз. композиция."""
     name = models.CharField(verbose_name='Имя', max_length=100)
     year = models.IntegerField(verbose_name='Дата релиза')
     description = models.TextField(verbose_name='Описание', null=True,
@@ -49,6 +52,7 @@ class Title(models.Model):
 
 
 class TitleGenre(models.Model):
+    """Модель для определения нескольких жанров у произведений."""
     title = models.ForeignKey(Title, verbose_name='Произведение',
                               on_delete=models.CASCADE)
     genre = models.ForeignKey(Genre, verbose_name='Жанр',
