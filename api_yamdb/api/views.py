@@ -1,6 +1,7 @@
 from api import permissions, serializers
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
@@ -39,7 +40,7 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     """Получение, создание, обновление, удаление произведения."""
-    queryset = Title.objects.all()
+    queryset = Title.objects.all().annotate(Avg('reviews__score'))
     serializer_class = serializers.TitleSerializer
     permission_classes = (permissions.IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)

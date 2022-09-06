@@ -26,6 +26,8 @@ class TitleSerializer(serializers.ModelSerializer):
                                          many=True, slug_field='slug')
     category = serializers.SlugRelatedField(queryset=Category.objects.all(),
                                             slug_field='slug')
+    rating = serializers.IntegerField(source='reviews__score__avg',
+                                      read_only=True)
 
     class Meta:
         model = Title
