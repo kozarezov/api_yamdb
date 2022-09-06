@@ -33,7 +33,6 @@ class Title(models.Model):
     description = models.TextField(verbose_name='Описание', null=True,
                                    blank=True)
     genre = models.ManyToManyField(Genre, through='TitleGenre',
-                                   on_delete=models.SET_NULL,
                                    verbose_name='Жанр')
     category = models.ForeignKey(Category, related_name='titles',
                                  on_delete=models.SET_NULL, null=True,
@@ -51,9 +50,9 @@ class Title(models.Model):
 
 class TitleGenre(models.Model):
     title = models.ForeignKey(Title, verbose_name='Произведение',
-                              on_delete=models.SET_NULL)
+                              on_delete=models.CASCADE)
     genre = models.ForeignKey(Genre, verbose_name='Жанр',
-                              on_delete=models.SET_NULL)
+                              on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.title} (жанр - {self.genre})'
