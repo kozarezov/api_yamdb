@@ -7,7 +7,7 @@ from users.models import User
 class UserSignUpSerializer(serializers.ModelSerializer):
     """Сериализация данных при регистрации пользователя."""
 
-    username = serializers.SlugField(
+    username = serializers.CharField(
         max_length=150,
         required=True,
         validators=[UniqueValidator(
@@ -32,3 +32,20 @@ class UserSignUpSerializer(serializers.ModelSerializer):
                 'Невозможно создать пользователя с логином me'
             )
         return value
+
+
+class TokenSerializer(serializers.Serializer):
+    """Сериализация токена."""
+
+    username = serializers.CharField(max_length=150)
+    confirmation_code = serializers.CharField()
+
+
+class UsersSerializer(serializers.Serializer):
+    """Сериализация модели User."""
+
+    class Meta:
+        model = User
+        fields = ('username', 'email',
+                  'first_name', 'last_name',
+                  'bio', 'role')
