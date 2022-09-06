@@ -30,7 +30,7 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    """Произведение (книга, фильм, муз. композиция."""
+    """Произведение (книга, фильм, муз. композиция)."""
     name = models.CharField(verbose_name='Имя', max_length=100)
     year = models.IntegerField(verbose_name='Дата релиза')
     description = models.TextField(verbose_name='Описание', null=True,
