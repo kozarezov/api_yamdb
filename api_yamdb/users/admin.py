@@ -1,10 +1,11 @@
+from import_export.admin import ImportExportModelAdmin
 from django.contrib import admin
 
 from .models import User
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(ImportExportModelAdmin):
     """Настройки админ панели для User."""
 
     list_display = ('pk', 'username',
