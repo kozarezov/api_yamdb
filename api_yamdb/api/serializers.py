@@ -71,7 +71,7 @@ class TokenSerializer(serializers.Serializer):
     confirmation_code = serializers.CharField()
 
 
-class UsersSerializer(serializers.Serializer):
+class UsersSerializer(serializers.ModelSerializer):
     """Сериализация модели User."""
 
     class Meta:
@@ -79,3 +79,14 @@ class UsersSerializer(serializers.Serializer):
         fields = ('username', 'email',
                   'first_name', 'last_name',
                   'bio', 'role')
+
+
+class UsersMeSerializer(serializers.ModelSerializer):
+    """Сериализация модели User."""
+
+    class Meta:
+        model = User
+        fields = ('username', 'email',
+                  'first_name', 'last_name',
+                  'bio', 'role')
+        read_only_fields = ('role',)
