@@ -5,10 +5,12 @@ from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
+
 from reviews.models import Category, Genre, Title
 from users.models import User
 
@@ -40,7 +42,7 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     """Получение, создание, обновление, удаление произведения."""
-    queryset = Title.objects.all().annotate(Avg('reviews__score'))
+    queryset = Title.objects.all().annotate(Avg('review__score'))
     serializer_class = serializers.TitleSerializer
     permission_classes = (permissions.IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
@@ -102,3 +104,16 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
     lookup_field = 'username'
+
+    @action(methods=['GET', 'PATCH'], detail=False)
+    def me(self, request):
+        serializer = serializers.UsersSerializer(request.user)
+        if request.method == 'PATCH':
+            serializer = serializers.UsersMeSerializer(
+                request.user,
+                data=request.data,
+                partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data)
