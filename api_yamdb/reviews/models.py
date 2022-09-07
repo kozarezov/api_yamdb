@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import User
 
 
 class Category(models.Model):
@@ -64,3 +65,37 @@ class TitleGenre(models.Model):
     class Meta:
         verbose_name = 'Произведение и жанр'
         verbose_name_plural = 'Произведения и жанры'
+
+
+class Review(models.Model):
+    """Модель отзывов."""
+    text = models.TextField(max_length=800, verbose_name='Текст отзыва')
+    title = models.ForeignKey(Title, verbose_name='Произведение',
+                              on_delete=models.CASCADE)
+    score = models.IntegerField(verbose_name='Оценка', null=True)
+    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE, verbose_name='Автор отзыва')
+
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['title', 'author'],
+                                    name='unique_review')
+        ]
+
+
+class Comments(models.Model):
+    """Модель комментариев."""
+    text = models.TextField(max_length=200, verbose_name='Комментарий к отзыву')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE, verbose_name='Автор комментария')
+    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, )
+
+    def __str__(self):
+        return self.text
