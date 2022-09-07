@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django_filters',
     'api',
     'reviews.apps.ReviewsConfig',
+    'import_export',
 ]
 
 MIDDLEWARE = [
