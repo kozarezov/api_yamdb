@@ -115,12 +115,16 @@ class ReviewSerializer(serializers.ModelSerializer):
         slug_field='username',
         default=serializers.CurrentUserDefault())
 
+    title = serializers.SlugRelatedField(
+        slug_field='name',
+        read_only=True,
+    )
+
     score = serializers.IntegerField(max_value=10, min_value=1)
 
     class Meta:
         model = Review
         fields = '__all__'
-        read_only_fields = ('title',)
 
     def validate_review(self, data):
         author = self.context['request'].user
