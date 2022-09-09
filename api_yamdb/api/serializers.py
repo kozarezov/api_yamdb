@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from reviews.models import Category, Genre, Title, Review, Comment
 from users.models import User
+from django.shortcuts import get_object_or_404
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -96,22 +97,26 @@ class ReviewSerializer(serializers.ModelSerializer):
     """Сериализация модели Review."""
     author = serializers.SlugRelatedField(
         read_only=True,
-        slug_field='username')
+        slug_field='username',
+        default=serializers.CurrentUserDefault())
 
     score = serializers.IntegerField(max_value=10, min_value=1)
-    title = Title.objects.get(id=self.kwargs.get('title_id')) # НЕ СРАБОТАЕТ?
 
     class Meta:
         model = Review
-        fields = ('text', 'title', 'score', 'pub_date' 'author')
+        fields = '__all__'
+        read_only_fields = ('title',)
 
-    def validate_review(self, request):
+    def validate_review(self, data):
+        author = self.context['request'].user
+        title_id = self.context['request'].kwargs.get('title_id')
+        title = get_object_or_404(Title, id=title_id)
         if self.context['request'].method == 'POST':
-            if Review.objects.filter(
-                    author=self.context['request'].user).exists:
+            if Review.objects.filter(title=title, author=author).exists():
                 raise serializers.ValidationError(
                     'Можно оставить только один отзыв на произведение')
-        return request
+
+        return data
 
     def validate_integer_number(self, score):
         if score > 10 or score < 1:

@@ -2,8 +2,6 @@ from api import views
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import CommentViewSet, ReviewViewSet
-
 app_name = 'api'
 
 v1_router = DefaultRouter()
@@ -11,17 +9,17 @@ v1_router.register('users', views.UserViewSet, basename='users')
 v1_router.register('categories', views.CategoryViewSet)
 v1_router.register('genres', views.GenreViewSet)
 v1_router.register('titles', views.TitleViewSet)
-v1_router.register(r'titles/(?<title_id>\d+)/reviews/', ReviewViewSet,
+v1_router.register(r'titles/(?P<title_id>\d+)/reviews/', views.ReviewViewSet,
                    basename='reviews')
-v1_router.register(r'titles/(?<title_id>\d+)/reviews/(?<review_id>\d+)/',
-                   ReviewViewSet,
+v1_router.register(r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/',
+                   views.ReviewViewSet,
                    basename='reviews')
-v1_router.register(r'titles/(?<title_id>\d+)/reviews/('
-                   r'?<review_id>\d+)/comments/', CommentViewSet,
+v1_router.register(r'titles/(?P<title_id>\d+)/reviews/('
+                   r'?P<review_id>\d+)/comments/', views.CommentViewSet,
                    basename='comments')
-v1_router.register(r'titles/(?<title_id>\d+)/reviews/('
-                   r'?<review_id>\d+)/comments/('
-                   r'?<comment_id>\d+)/', CommentViewSet,
+v1_router.register(r'titles/(?P<title_id>\d+)/reviews/('
+                   r'?P<review_id>\d+)/comments/('
+                   r'?P<comment_id>\d+)/', views.CommentViewSet,
                    basename='comments')
 
 
