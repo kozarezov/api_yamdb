@@ -71,7 +71,7 @@ class Review(models.Model):
     """Модель отзывов."""
     text = models.TextField(max_length=800, verbose_name='Текст отзыва')
     title = models.ForeignKey(Title, verbose_name='Произведение',
-                              on_delete=models.CASCADE)
+                              on_delete=models.CASCADE, related_name='reviews')
     score = models.IntegerField(verbose_name='Оценка', null=True)
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
     author = models.ForeignKey(
@@ -90,12 +90,14 @@ class Review(models.Model):
 
 class Comment(models.Model):
     """Модель комментариев."""
-    text = models.TextField(max_length=200, verbose_name='Комментарий к отзыву')
+    text = models.TextField(max_length=200,
+                            verbose_name='Комментарий к отзыву')
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE, verbose_name='Автор комментария')
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
-    review = models.ForeignKey(Review, on_delete=models.CASCADE, )
+    review = models.ForeignKey(Review, on_delete=models.CASCADE,
+                               related_name='comments')
 
     def __str__(self):
         return self.text
