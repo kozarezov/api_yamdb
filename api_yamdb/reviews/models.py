@@ -43,7 +43,7 @@ class Title(models.Model):
     category = models.ForeignKey(Category, related_name='titles',
                                  on_delete=models.SET_NULL, null=True,
                                  verbose_name='Категория')
-    rating = models.IntegerField(verbose_name='Рейтинг', null=True)
+    rating = models.IntegerField(verbose_name='Рейтинг', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -84,10 +84,13 @@ class Review(models.Model):
         return self.text
 
     class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
         constraints = [
             models.UniqueConstraint(fields=['title', 'author'],
                                     name='unique_review')
         ]
+        ordering = ('-pub_date',)
 
 
 class Comment(models.Model):
@@ -103,3 +106,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
+    
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'

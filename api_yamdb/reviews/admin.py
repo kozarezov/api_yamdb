@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 
-from .models import Category, Genre, Title, TitleGenre
+from .models import Category, Genre, Title, TitleGenre, Comment, Review
 
 
 @admin.register(Category)
@@ -43,4 +43,28 @@ class TitleGenreAdmin(ImportExportModelAdmin):
         'title',
         'genre',
     )
+    empty_value_display = '-пусто-'
+    
+@admin.register(Comment)
+class CommentAdmin(ImportExportModelAdmin):
+    list_display = (
+        'review',
+        'text',
+        'author',
+        'pub_date',
+    )
+    search_fields = ('review',)
+    list_filter = ('review',)
+    empty_value_display = '-пусто-'
+    
+@admin.register(Review)
+class ReviewAdmin(ImportExportModelAdmin):
+    list_display = (
+        'title',
+        'text',
+        'author',
+        'score',
+    )
+    search_fields = ('pub_date',)
+    list_filter = ('pub_date',)
     empty_value_display = '-пусто-'
