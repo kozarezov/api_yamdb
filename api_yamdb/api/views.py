@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
@@ -117,7 +117,7 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ('username',)
     lookup_field = 'username'
 
-    @action(methods=['GET', 'PATCH'], detail=False)
+    @action(methods=['GET', 'PATCH'], detail=False, permission_classes=(IsAuthenticated,))
     def me(self, request):
         serializer = serializers.UsersSerializer(request.user)
         if request.method == 'PATCH':
