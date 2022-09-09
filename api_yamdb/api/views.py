@@ -11,7 +11,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
 from reviews.models import Category, Comment, Genre, Review, Title
-from users.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 from .filters import TitleFilter
 from .permissions import IsAuthorOrAdminOrModerator
