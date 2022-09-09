@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from reviews.models import Category, Genre, Title
+from reviews.models import Category, Genre, Title, Review, Comment
 from users.models import User
 
 
@@ -90,3 +90,44 @@ class UsersMeSerializer(serializers.ModelSerializer):
                   'first_name', 'last_name',
                   'bio', 'role')
         read_only_fields = ('role',)
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    """Сериализация модели Review."""
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username')
+
+    score = serializers.IntegerField(max_value=10, min_value=1)
+    title = Title.objects.get(id=self.kwargs.get('title_id')) # НЕ СРАБОТАЕТ?
+
+    class Meta:
+        model = Review
+        fields = ('text', 'title', 'score', 'pub_date' 'author')
+
+    def validate_review(self, request):
+        if self.context['request'].method == 'POST':
+            if Review.objects.filter(
+                    author=self.context['request'].user).exists:
+                raise serializers.ValidationError(
+                    'Можно оставить только один отзыв на произведение')
+        return request
+
+    def validate_integer_number(self, score):
+        if score > 10 or score < 1:
+            raise serializers.ValidationError(
+                'Выберете оценку от 1 до 10')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    """Сериализация модели Comment."""
+
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+    )
+
+    class Meta:
+        fields = '__all__'
+        model = Comment
+        read_only_fields = ('review',)
