@@ -1,7 +1,10 @@
 asgiref==3.5.2
+atomicwrites==1.4.1
 attrs==22.1.0
+backports.zoneinfo==0.2.1
 certifi==2022.6.15
 charset-normalizer==2.0.12
+colorama==0.4.5
 coreapi==2.3.3
 coreschema==0.0.4
 defusedxml==0.7.1
@@ -43,7 +46,8 @@ ruamel.yaml.clib==0.2.6
 sqlparse==0.4.2
 tablib==3.2.1
 toml==0.10.2
-typing_extensions==4.3.0
+typing-extensions==4.3.0
+tzdata==2022.2
 uritemplate==4.1.1
 urllib3==1.26.12
 xlrd==2.0.1

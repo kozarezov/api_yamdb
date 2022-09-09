@@ -1,4 +1,5 @@
 from api import permissions, serializers
+from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db.models import Avg
@@ -11,7 +12,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
 from reviews.models import Category, Comment, Genre, Review, Title
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
@@ -130,6 +130,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.data)
 
+
 class ReviewViewSet(viewsets.ModelViewSet):
     """Получение, создание, обновление, удаление отзыва."""
     serializer_class = serializers.ReviewSerializer
@@ -147,6 +148,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         title = get_object_or_404(Title, id=title_id)
         serializer.save(author=self.request.user, title=title)
 
+
 class CommentViewSet(viewsets.ModelViewSet):
     """Получение, создание, обновление, удаление комментария."""
     serializer_class = serializers.CommentSerializer
@@ -160,8 +162,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         return new_queryset
 
     def perform_create(self, serializer):
-        review_id = self.kwargs.get('reivew_id')
+        review_id = self.kwargs.get('review_id')
         review = get_object_or_404(Review, pk=review_id)
         serializer.save(author=self.request.user, review=review)
-
-
