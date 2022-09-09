@@ -88,7 +88,7 @@ class Review(models.Model):
         ]
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     """Модель комментариев."""
     text = models.TextField(max_length=200, verbose_name='Комментарий к отзыву')
     author = models.ForeignKey(
