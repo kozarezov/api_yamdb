@@ -27,4 +27,3 @@ urlpatterns += [url(r'^swagger(?P<format>\.json|\.yaml)$',
                 url(r'^redoc/$',
                     schema_view.with_ui('redoc', cache_timeout=0),
                     name='schema-redoc'), ]
-

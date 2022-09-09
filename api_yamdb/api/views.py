@@ -11,12 +11,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
-from reviews.models import Category, Comment, Genre, Review, Title
-
-User = get_user_model()
+from reviews.models import Category, Genre, Review, Title
 
 from .filters import TitleFilter
 from .permissions import IsAuthorOrAdminOrModerator
+
+User = get_user_model()
 
 
 class ListCreateDestroyViewSet(mixins.ListModelMixin,
@@ -117,7 +117,8 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ('username',)
     lookup_field = 'username'
 
-    @action(methods=['GET', 'PATCH'], detail=False, permission_classes=(IsAuthenticated,))
+    @action(methods=['GET', 'PATCH'], detail=False,
+            permission_classes=(IsAuthenticated,))
     def me(self, request):
         serializer = serializers.UsersSerializer(request.user)
         if request.method == 'PATCH':
