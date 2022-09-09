@@ -1,9 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-USER = 'User'
-MODERATOR = 'Moderator'
-ADMIN = 'Admin'
+USER = 'user'
+MODERATOR = 'moderator'
+ADMIN = 'admin'
 
 ROLES = (
     (USER, 'Пользователь'),
