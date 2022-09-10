@@ -1,41 +1,44 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from .validators import validate_year
+
 User = get_user_model()
 
 
 class Category(models.Model):
     """Категория произведения."""
     name = models.CharField(verbose_name='Имя', max_length=100)
-    slug = models.SlugField(verbose_name='Слаг', max_length=20, unique=True)
-
-    def __str__(self):
-        return self.name
+    slug = models.SlugField(verbose_name='Слаг', max_length=100, unique=True)
 
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
         ordering = ('name',)
 
+    def __str__(self):
+        return self.name
+
 
 class Genre(models.Model):
     """Жанр произведения."""
     name = models.CharField(verbose_name='Имя', max_length=100)
-    slug = models.SlugField(verbose_name='Слаг', max_length=20, unique=True)
-
-    def __str__(self):
-        return self.name
+    slug = models.SlugField(verbose_name='Слаг', max_length=100, unique=True)
 
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
         ordering = ('name',)
 
+    def __str__(self):
+        return self.name
+
 
 class Title(models.Model):
     """Произведение (книга, фильм, муз. композиция)."""
     name = models.CharField(verbose_name='Имя', max_length=100)
-    year = models.IntegerField(verbose_name='Дата релиза')
+    year = models.IntegerField(verbose_name='Дата релиза',
+                               validators=(validate_year,))
     description = models.TextField(verbose_name='Описание', null=True,
                                    blank=True)
     genre = models.ManyToManyField(Genre, through='TitleGenre',
@@ -43,15 +46,14 @@ class Title(models.Model):
     category = models.ForeignKey(Category, related_name='titles',
                                  on_delete=models.SET_NULL, null=True,
                                  verbose_name='Категория')
-    rating = models.IntegerField(verbose_name='Рейтинг', null=True, blank=True)
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
         ordering = ('name',)
+
+    def __str__(self):
+        return self.name
 
 
 class TitleGenre(models.Model):
