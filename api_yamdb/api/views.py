@@ -1,4 +1,3 @@
-from api import permissions, serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -11,10 +10,16 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
-from reviews.models import Category, Genre, Review, Title
 
+from api_yamdb.settings import DEFAULT_EMAIL
+from reviews.models import Category, Genre, Review, Title
 from .filters import TitleFilter
-from .permissions import IsAuthorOrAdminOrModerator
+from .permissions import IsAuthorOrAdminOrModerator, IsAdmin, IsAdminOrReadOnly
+from .serializers import (CategorySerializer, GenreSerializer,
+                          TitleWriteSerializer, TitleReadSerializer,
+                          UserSignUpSerializer, TokenSerializer,
+                          UserSerializer, UserMeSerializer,
+                          ReviewSerializer, CommentSerializer)
 
 User = get_user_model()
 
@@ -29,8 +34,8 @@ class ListCreateDestroyViewSet(mixins.ListModelMixin,
 class CategoryViewSet(ListCreateDestroyViewSet):
     """Получение, создание, удаление категории произведения."""
     queryset = Category.objects.all()
-    serializer_class = serializers.CategorySerializer
-    permission_classes = (permissions.IsAdminOrReadOnly,)
+    serializer_class = CategorySerializer
+    permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -39,8 +44,8 @@ class CategoryViewSet(ListCreateDestroyViewSet):
 class GenreViewSet(ListCreateDestroyViewSet):
     """Получение, создание, удаление жанра произведения."""
     queryset = Genre.objects.all()
-    serializer_class = serializers.GenreSerializer
-    permission_classes = (permissions.IsAdminOrReadOnly,)
+    serializer_class = GenreSerializer
+    permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -48,17 +53,18 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     """Получение, создание, обновление, удаление произведения."""
-    queryset = Title.objects.all().annotate(Avg('reviews__score')).order_by(
+    queryset = Title.objects.all().annotate(rating=Avg(
+        'reviews__score')).order_by(
         'name')
-    serializer_class = serializers.TitleSerializer
-    permission_classes = (permissions.IsAdminOrReadOnly,)
+    serializer_class = TitleWriteSerializer
+    permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
 
     def get_serializer_class(self):
         if self.action in ('retrieve', 'list'):
-            return serializers.TitleReadSerializer
-        return serializers.TitleSerializer
+            return TitleReadSerializer
+        return TitleWriteSerializer
 
 
 class UserSignUp(APIView):
@@ -73,12 +79,12 @@ class UserSignUp(APIView):
         send_mail(
             subject='Confirmation code',
             message=f'Ваш код: {token}',
-            from_email='robot@yamdb.ru',
+            from_email=DEFAULT_EMAIL,
             recipient_list=[user.email]
         )
 
     def post(self, request):
-        serializer = serializers.UserSignUpSerializer(data=request.data)
+        serializer = UserSignUpSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         self.send_confirmation_code(user)
@@ -90,7 +96,7 @@ class UserToken(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        serializer = serializers.TokenSerializer(data=request.data)
+        serializer = TokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = get_object_or_404(User, username=request.data['username'])
 
@@ -102,7 +108,7 @@ class UserToken(APIView):
                 {'token': str(token)}, status=status.HTTP_200_OK
             )
         return Response(
-            {'Ошибка формирования токена'},
+            {'confirmation_code': 'Ошибка формирования токена'},
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -111,30 +117,28 @@ class UserViewSet(viewsets.ModelViewSet):
     """Вьюсет для добавления/изменения/удаления пользователей."""
 
     queryset = User.objects.all()
-    serializer_class = serializers.UsersSerializer
-    permission_classes = (permissions.IsAdmin,)
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('username',)
+    serializer_class = UserSerializer
+    permission_classes = (IsAdmin,)
     lookup_field = 'username'
 
     @action(methods=['GET', 'PATCH'], detail=False,
             permission_classes=(IsAuthenticated,))
     def me(self, request):
-        serializer = serializers.UsersSerializer(request.user)
         if request.method == 'PATCH':
-            serializer = serializers.UsersMeSerializer(
+            serializer = UserMeSerializer(
                 request.user,
                 data=request.data,
                 partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.data)
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """Получение, создание, обновление, удаление отзыва."""
-    serializer_class = serializers.ReviewSerializer
+    serializer_class = ReviewSerializer
     permission_classes = (IsAuthorOrAdminOrModerator,)
 
     def get_queryset(self):
@@ -152,7 +156,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     """Получение, создание, обновление, удаление комментария."""
-    serializer_class = serializers.CommentSerializer
+    serializer_class = CommentSerializer
     permission_classes = (IsAuthorOrAdminOrModerator,)
 
     def get_queryset(self):

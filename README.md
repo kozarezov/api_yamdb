@@ -11,7 +11,7 @@ IMDB can leave you at any time, but reliable YaMDb will always be available 😊
 
 Check it out!
 
-![TEAM 22](https://i.yapx.ru/TywCz.png)
+![Powered by TEAM 22, Python and DRF](https://i.yapx.ru/TywCz.png)
 
 ## 1. Technologies:
 
@@ -67,4 +67,32 @@ python manage.py runserver
 http://127.0.0.1:8000/redoc/
  ```
 
+## 4. Requests examples:
 
+#### Authorization:
+
+**POST:** `/api/v1/auth/signup/` - to signup for new user
+
+#### Actions with titles:
+
+**GET:** `/api/v1/titles/` - to get all titles list
+
+**POST:** `/api/v1/titles/` - to add a title
+
+**PATCH:** `/api/v1/titles/{titles_id}/` - to update your title
+
+**DELETE:** `/api/v1/titles/{titles_id}/` - to delete your title
+
+#### Actions with reviews / comments:
+
+**POST:** `/api/v1/titles/{title_id}/reviews/ ` - to create a review
+
+**GET:** `/api/v1/titles/{title_id}/reviews/ ` - to get a title's reviews
+
+## 5. Created by Team_22:
+
+Denis Kozarezov [GitHub](https://github.com/kozarezov)
+
+Irina Savenko [GitHub](https://github.com/Savi-rina)
+
+Alexey Shemyakin [GitHub](https://github.com/Pomor29)
