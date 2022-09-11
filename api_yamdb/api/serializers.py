@@ -53,16 +53,21 @@ class UserSignUpSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
         max_length=150,
         required=True,
-        validators=[UniqueValidator(
-            queryset=User.objects.all(),
-            message='Пользователь с таким username уже существует')]
+        validators=(
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message='Пользователь с таким username уже существует'
+            ),
+        )
     )
     email = serializers.EmailField(
         max_length=254,
         required=True,
-        validators=[UniqueValidator(
-            queryset=User.objects.all(),
-            message='Пользователь с таким email уже существует')]
+        validators=(
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message='Пользователь с таким email уже существует'),
+        )
     )
 
     class Meta:
@@ -76,6 +81,13 @@ class UserSignUpSerializer(serializers.ModelSerializer):
             )
         return value
 
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                'Пользователь с таким email существует.'
+            )
+        return value
+
 
 class TokenSerializer(serializers.Serializer):
     """Сериализация токена."""
@@ -84,7 +96,7 @@ class TokenSerializer(serializers.Serializer):
     confirmation_code = serializers.CharField()
 
 
-class UsersSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """Сериализация модели User."""
 
     class Meta:
@@ -94,7 +106,7 @@ class UsersSerializer(serializers.ModelSerializer):
                   'bio', 'role')
 
 
-class UsersMeSerializer(serializers.ModelSerializer):
+class UserMeSerializer(serializers.ModelSerializer):
     """Сериализация модели User."""
 
     class Meta:
