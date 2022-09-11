@@ -18,11 +18,11 @@ v1_router.register(r'titles/(?P<title_id>\d+)/reviews/('
                    basename='comments')
 
 auth_urlpatterns = [
-    path('signup/', UserSignUp.as_view(), name='register'),
-    path('token/', UserToken.as_view(), name='token')
+    path('signup/', UserSignUp.as_view()),
+    path('token/', UserToken.as_view())
 ]
 
 urlpatterns = [
     path('v1/', include(v1_router.urls)),
-    path('auth/', include(auth_urlpatterns)),
+    path('v1/auth/', include(auth_urlpatterns)),
 ]
