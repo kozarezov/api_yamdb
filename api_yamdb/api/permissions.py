@@ -11,6 +11,7 @@ class IsAdmin(permissions.BasePermission):
 class IsAdminOrReadOnly(permissions.BasePermission):
     """Проверка, что пользователь является админом или применен безопасный
     метод."""
+    message = 'У Вашей учетной записи недостаточно прав (ADMIN)'
 
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS

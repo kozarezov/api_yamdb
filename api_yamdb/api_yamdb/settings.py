@@ -10,18 +10,19 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
-    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'drf_yasg',
-    'django_filters',
+
+    'users.apps.UsersConfig',
     'api',
     'reviews.apps.ReviewsConfig',
+
+    'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

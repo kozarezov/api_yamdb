@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+
 from reviews.models import Category, Comment, Genre, Review, Title
 
 User = get_user_model()
@@ -13,7 +14,6 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('name', 'slug')
-        lookup_field = 'slug'
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -22,11 +22,10 @@ class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         fields = ('name', 'slug')
-        lookup_field = 'slug'
 
 
-class TitleSerializer(serializers.ModelSerializer):
-    """Сериализация модели Title."""
+class TitleWriteSerializer(serializers.ModelSerializer):
+    """Сериализация модели Title для записи."""
     genre = serializers.SlugRelatedField(queryset=Genre.objects.all(),
                                          many=True, slug_field='slug')
     category = serializers.SlugRelatedField(queryset=Category.objects.all(),
@@ -41,13 +40,11 @@ class TitleReadSerializer(serializers.ModelSerializer):
     """Сериализация модели Title только для чтения."""
     genre = GenreSerializer(many=True)
     category = CategorySerializer()
-    rating = serializers.IntegerField(source='reviews__score__avg',
-                                      read_only=True)
+    rating = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Title
-        fields = (
-            'id', 'name', 'year', 'rating', 'description', 'genre', 'category')
+        fields = '__all__'
 
 
 class UserSignUpSerializer(serializers.ModelSerializer):

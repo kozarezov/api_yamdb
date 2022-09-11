@@ -1,4 +1,3 @@
-from api import permissions, serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -11,8 +10,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
-from reviews.models import Category, Genre, Review, Title
 
+from api import permissions, serializers
+from reviews.models import Category, Genre, Review, Title
 from .filters import TitleFilter
 from .permissions import IsAuthorOrAdminOrModerator
 
@@ -48,9 +48,10 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     """Получение, создание, обновление, удаление произведения."""
-    queryset = Title.objects.all().annotate(Avg('reviews__score')).order_by(
+    queryset = Title.objects.all().annotate(rating=Avg(
+        'reviews__score')).order_by(
         'name')
-    serializer_class = serializers.TitleSerializer
+    serializer_class = serializers.TitleWriteSerializer
     permission_classes = (permissions.IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
@@ -58,7 +59,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ('retrieve', 'list'):
             return serializers.TitleReadSerializer
-        return serializers.TitleSerializer
+        return serializers.TitleWriteSerializer
 
 
 class UserSignUp(APIView):
