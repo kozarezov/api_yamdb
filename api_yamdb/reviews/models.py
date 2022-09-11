@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from .validators import validate_year
@@ -73,10 +74,13 @@ class TitleGenre(models.Model):
 
 class Review(models.Model):
     """Модель отзывов."""
-    text = models.TextField(max_length=800, verbose_name='Текст отзыва')
+    text = models.TextField(verbose_name='Текст отзыва')
     title = models.ForeignKey(Title, verbose_name='Произведение',
                               on_delete=models.CASCADE, related_name='reviews')
-    score = models.IntegerField(verbose_name='Оценка', null=True)
+    score = models.IntegerField(validators=[MinValueValidator(limit_value=1),
+                                MaxValueValidator(
+                                    limit_value=10)], verbose_name='Оценка',
+                                                                   null=True)
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
     author = models.ForeignKey(
         User,
@@ -89,7 +93,7 @@ class Review(models.Model):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
         constraints = [
-            models.UniqueConstraint(fields=['title', 'author'],
+            models.UniqueConstraint(fields=('title', 'author'),
                                     name='unique_review')
         ]
         ordering = ('-pub_date',)
