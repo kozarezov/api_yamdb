@@ -115,10 +115,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         slug_field='username',
         default=serializers.CurrentUserDefault())
 
-    title = serializers.SlugRelatedField(
-        slug_field='name',
-        read_only=True,
-    )
 
     score = serializers.IntegerField(max_value=10, min_value=1)
 
@@ -129,9 +125,8 @@ class ReviewSerializer(serializers.ModelSerializer):
     def validate(self, data):
         author = self.context['request'].user
         title_id = self.context['view'].kwargs.get('title_id')
-        title = get_object_or_404(Title, id=title_id)
         if self.context['request'].method == 'POST':
-            if Review.objects.filter(title=title, author=author).exists():
+            if Review.objects.filter(title=title_id, author=author).exists():
                 raise serializers.ValidationError(
                     'Можно оставить только один отзыв на произведение')
 
@@ -152,6 +147,6 @@ class CommentSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = '__all__'
+        fields = ('text', 'author', 'pub_date')
         model = Comment
-        read_only_fields = ('review',)
+        read_only_fields = ('author',)

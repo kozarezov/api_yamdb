@@ -1,6 +1,15 @@
 # YaMDB
 
 ### _API resource for collect reviews on movies, books, music etc._
+if you have an irresistible desire to read or watch something brand new, 
+and at the same time find out people's opinions regarding a title, our super-cool API resource will save your time spent on searching for high-quality content!
+Visiting our website, you have a marvelous possibility to see reviews of various books, films, music track etc. and find out their rating, genre, category!
+
+Moreover, if you are keen on sharing your opinion with other users and influence their choice (you may have an influence on what your friend will check out on Netflix this Friday, is it great?), then just register! It will also help you to leave comments on the reviews of other respected users.
+
+IMDB can leave you at any time, but reliable YaMDb will always be available 😊
+
+Check it out!
 
 ![TEAM 22](https://i.yapx.ru/TywCz.png)
 
