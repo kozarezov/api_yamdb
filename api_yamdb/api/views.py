@@ -14,12 +14,12 @@ from rest_framework_simplejwt.tokens import AccessToken
 from api_yamdb.settings import DEFAULT_EMAIL
 from reviews.models import Category, Genre, Review, Title
 from .filters import TitleFilter
-from .permissions import IsAuthorOrAdminOrModerator, IsAdmin, IsAdminOrReadOnly
-from .serializers import (CategorySerializer, GenreSerializer,
-                          TitleWriteSerializer, TitleReadSerializer,
-                          UserSignUpSerializer, TokenSerializer,
-                          UserSerializer, UserMeSerializer,
-                          ReviewSerializer, CommentSerializer)
+from .permissions import IsAdmin, IsAdminOrReadOnly, IsAuthorOrAdminOrModerator
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer,
+                          TitleReadSerializer, TitleWriteSerializer,
+                          TokenSerializer, UserMeSerializer, UserSerializer,
+                          UserSignUpSerializer)
 
 User = get_user_model()
 
@@ -144,9 +144,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
-        queryset = title.reviews.all()
-
-        return queryset
+        return title.reviews.all()
 
     def perform_create(self, serializer):
         title_id = self.kwargs.get('title_id')
@@ -160,12 +158,9 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthorOrAdminOrModerator,)
 
     def get_queryset(self):
-        title_id = self.kwargs.get('title_id')
         review_id = self.kwargs.get('review_id')
-        review = get_object_or_404(Review, id=review_id, title=title_id)
-        queryset = review.comments.all()
-
-        return queryset
+        review = get_object_or_404(Review, pk=review_id)
+        return review.comments.all()
 
     def perform_create(self, serializer):
         title_id = self.kwargs.get('title_id')

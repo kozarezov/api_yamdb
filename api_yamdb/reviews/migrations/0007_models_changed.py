@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('reviews', '0005_rating_blank_true'),
+        ('reviews', '0006_change_user_model'),
     ]
 
     operations = [

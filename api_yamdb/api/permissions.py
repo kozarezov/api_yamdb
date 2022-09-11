@@ -22,10 +22,9 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 
 class IsAuthorOrAdminOrModerator(permissions.BasePermission):
     """Проверка, что пользователь является админом, автором отзыва,
-    модератором или применен безопасный
-     метод."""
-    message = 'У Вашей учетной записи недостаточно прав (' \
-              'ADMIN/AUTHOR/MODERATOR)'
+    модератором или применен безопасный метод."""
+
+    message = 'У Вашей учетной записи недостаточно прав (ADMIN/MODERATOR)'
 
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS
