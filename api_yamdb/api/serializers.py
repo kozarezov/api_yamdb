@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
@@ -27,7 +26,8 @@ class GenreSerializer(serializers.ModelSerializer):
 class TitleWriteSerializer(serializers.ModelSerializer):
     """Сериализация модели Title для записи."""
     genre = serializers.SlugRelatedField(queryset=Genre.objects.all(),
-                                         many=True, slug_field='slug')
+                                         many=True,
+                                         slug_field='slug')
     category = serializers.SlugRelatedField(queryset=Category.objects.all(),
                                             slug_field='slug')
 
@@ -124,21 +124,21 @@ class ReviewSerializer(serializers.ModelSerializer):
         slug_field='username',
         default=serializers.CurrentUserDefault())
 
-
     score = serializers.IntegerField(max_value=10, min_value=1)
 
     class Meta:
         model = Review
         fields = '__all__'
+        read_only_fields = ('title',)
 
     def validate(self, data):
         author = self.context['request'].user
         title_id = self.context['view'].kwargs.get('title_id')
         if self.context['request'].method == 'POST':
-            if Review.objects.filter(title=title_id, author=author).exists():
+            if Review.objects.filter(title__id=title_id,
+                                     author=author).exists():
                 raise serializers.ValidationError(
                     'Можно оставить только один отзыв на произведение')
-
         return data
 
     def validate_integer_number(self, score):
@@ -156,6 +156,5 @@ class CommentSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = ('text', 'author', 'pub_date')
         model = Comment
-        read_only_fields = ('author',)
+        fields = ('id', 'text', 'author', 'pub_date')
