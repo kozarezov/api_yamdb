@@ -82,11 +82,12 @@ class UserSignUpSerializer(serializers.ModelSerializer):
         return value
 
     def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
+        lowe_case_value = value.lower()
+        if User.objects.filter(email=lowe_case_value).exists():
             raise serializers.ValidationError(
                 'Пользователь с таким email существует.'
             )
-        return value
+        return lowe_case_value
 
 
 class TokenSerializer(serializers.Serializer):

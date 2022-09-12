@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -11,7 +12,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
 
-from api_yamdb.settings import DEFAULT_EMAIL
 from reviews.models import Category, Genre, Review, Title
 from .filters import TitleFilter
 from .permissions import IsAdmin, IsAdminOrReadOnly, IsAuthorOrAdminOrModerator
@@ -79,7 +79,7 @@ class UserSignUp(APIView):
         send_mail(
             subject='Confirmation code',
             message=f'Ваш код: {token}',
-            from_email=DEFAULT_EMAIL,
+            from_email=settings.DEFAULT_EMAIL,
             recipient_list=[user.email]
         )
 

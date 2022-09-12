@@ -21,9 +21,6 @@ class User(AbstractUser):
     bio = models.TextField('Информация о себе', blank=True)
     role = models.CharField('Роль', max_length=15, choices=ROLES, default=USER)
 
-    def __str__(self):
-        return self.username
-
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
@@ -33,6 +30,9 @@ class User(AbstractUser):
                 name='unique_username_email'
             ),
         )
+
+    def __str__(self):
+        return f'{self.username} - {self.email}'
 
     @property
     def is_admin(self):
