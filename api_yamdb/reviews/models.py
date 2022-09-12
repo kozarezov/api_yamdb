@@ -77,12 +77,12 @@ class TitleGenre(models.Model):
                               verbose_name='Жанр',
                               on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f'{self.title} (жанр - {self.genre})'
-
     class Meta:
         verbose_name = 'Произведение и жанр'
         verbose_name_plural = 'Произведения и жанры'
+
+    def __str__(self):
+        return f'{self.title} (жанр - {self.genre})'
 
 
 class Review(models.Model):

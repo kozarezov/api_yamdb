@@ -3,7 +3,6 @@ from rest_framework import permissions
 
 class IsAdmin(permissions.BasePermission):
     """Проверка, что пользователь является админом."""
-
     message = 'У Вашей учетной записи недостаточно прав (ADMIN)'
 
     def has_permission(self, request, view):
@@ -23,7 +22,6 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 class IsAuthorOrAdminOrModerator(permissions.BasePermission):
     """Проверка, что пользователь является админом, автором отзыва,
     модератором или применен безопасный метод."""
-
     message = 'У Вашей учетной записи недостаточно прав (ADMIN/MODERATOR)'
 
     def has_permission(self, request, view):

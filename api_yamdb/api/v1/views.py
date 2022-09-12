@@ -54,8 +54,7 @@ class GenreViewSet(ListCreateDestroyViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     """Получение, создание, обновление, удаление произведения."""
     queryset = Title.objects.all().annotate(rating=Avg(
-        'reviews__score')).order_by(
-        'name')
+        'reviews__score')).order_by('name')
     serializer_class = TitleWriteSerializer
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
@@ -69,7 +68,6 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 class UserSignUp(APIView):
     """Регистрация пользователя."""
-
     permission_classes = (AllowAny,)
 
     def send_confirmation_code(self, user):
@@ -115,7 +113,6 @@ class UserToken(APIView):
 
 class UserViewSet(viewsets.ModelViewSet):
     """Вьюсет для добавления/изменения/удаления пользователей."""
-
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAdmin,)
