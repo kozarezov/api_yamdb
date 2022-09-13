@@ -102,15 +102,15 @@ class Review(models.Model):
                                on_delete=models.CASCADE,
                                verbose_name='Автор отзыва')
 
-    def __str__(self):
-        return self.text
-
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
         constraints = (models.UniqueConstraint(fields=('title', 'author'),
                                                name='unique_review'),)
         ordering = ('-pub_date',)
+
+    def __str__(self):
+        return self.text
 
 
 class Comment(models.Model):
@@ -126,9 +126,9 @@ class Comment(models.Model):
                                on_delete=models.CASCADE,
                                related_name='comments')
 
-    def __str__(self):
-        return self.text
-
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return self.text
