@@ -7,7 +7,8 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, \
+    IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
@@ -136,7 +137,8 @@ class UserViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     """Получение, создание, обновление, удаление отзыва."""
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthorOrAdminOrModerator,)
+    permission_classes = (IsAuthorOrAdminOrModerator,
+                          IsAuthenticatedOrReadOnly)
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
@@ -152,7 +154,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     """Получение, создание, обновление, удаление комментария."""
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthorOrAdminOrModerator,)
+    permission_classes = (IsAuthorOrAdminOrModerator,
+                          IsAuthenticatedOrReadOnly)
 
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')

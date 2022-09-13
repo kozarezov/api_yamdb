@@ -24,10 +24,6 @@ class IsAuthorOrAdminOrModerator(permissions.BasePermission):
     модератором или применен безопасный метод."""
     message = 'У Вашей учетной записи недостаточно прав (ADMIN/MODERATOR)'
 
-    def has_permission(self, request, view):
-        return (request.method in permissions.SAFE_METHODS
-                or request.user.is_authenticated)
-
     def has_object_permission(self, request, view, obj):
         return (request.method in permissions.SAFE_METHODS
                 or obj.author == request.user
